@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Warehouse</string>
+    <string name="email">Your email here...</string>
+    <string name="password">Your password here...</string>
+    <string name="stock_take">Stock Take</string>
+    <string name="scan_item">Scan Item</string>
+    <string name="log_out">Log Out</string>
+    <string name="material_name">Material Name</string>
+    <string name="material_number">Material Number</string>
+    <string name="quantity">Quantity</string>
+    <string name="location">Location</string>
+    <string name="batch_number">Batch Number</string>
+    <string name="area_list">Choose area</string>
+    <string name="choose_building">Choose Building</string>
+    <string name="save">Save</string>
+    <string name="confirmation">Ok</string>
+    <string name="edit">Edit</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="already_checked">Already Checked!</string>
+</resources>
