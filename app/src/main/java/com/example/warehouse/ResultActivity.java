@@ -42,6 +42,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * The ResultActivity class is responsible for displaying the result of a scanned item.
+ * It retrieves the item details from the server and displays them on the screen.
+ * It also provides functionality for confirming the changes made to the item and launching the scanner.
+ *
+ * @author JN
+ * @date 13 June 2024
+ */
 public class ResultActivity extends AppCompatActivity {
 
     private TextView batchNumber;
@@ -62,6 +70,12 @@ public class ResultActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private FrameLayout pbLoading;
 
+    /**
+     * Called when the activity is starting or being recreated.
+     * Initializes the activity, sets the layout, and handles the logic for refreshing the layout.
+     *
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -175,6 +189,9 @@ public class ResultActivity extends AppCompatActivity {
         qrScan.setOnClickListener(v -> scanProcessing());
     }
 
+    /**
+     * Checks the internet status and registers a broadcast receiver to listen for connectivity changes.
+     */
     private void Internetstatus() {
         registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
@@ -186,12 +203,10 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * function confirmation
-     * return void
-     * parameter none
-     * To confirmation the changes from the item.
-     * author : JN
-     * date : 13 June 2024
+     * Sets up the confirmation functionality.
+     * This method sets the text of a button to a confirmation string,
+     * makes a card view visible, and sets up a click listener for the card view.
+     * When the card view is clicked, it starts the MainActivity.
      */
     private void confirmation() {
         TextView textButton = findViewById(R.id.textSave);
@@ -206,14 +221,10 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * function scanProcessing
-     * return void
-     * parameter none
-     * To launch the scanner layout from the zxing library
-     * which will be described through the launcher function
-     * and will be passed in the getResult function.
-     * author : JN
-     * date : 13 June 2024
+     * Performs the processing for scanning a barcode.
+     * This method sets up the scan options, including the desired barcode formats,
+     * beep sound, orientation lock, capture activity, and prompt message.
+     * It then launches the scanning process.
      */
     protected void scanProcessing() {
         ScanOptions scanOptions = new ScanOptions();
@@ -225,21 +236,23 @@ public class ResultActivity extends AppCompatActivity {
         launcher.launch(scanOptions);
     }
 
+    /**
+     * This method registers an activity result launcher for scanning options and handles the result.
+     * If the result contains valid contents, it calls the getResult() method.
+     *
+     * @param launcher The activity result launcher for scanning options.
+     */
     ActivityResultLauncher<ScanOptions> launcher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null) {
             getResult(result.getContents());
         }
     });
 
+    
     /**
-     * function getResult
-     * return void
-     * parameter String contents - the content of the scanned result
-     * This function creates an Intent to launch the ResultActivity,
-     * clearing any existing tasks and passing the scanned batch number
-     * as an extra.
-     * author : JN
-     * date : 13 June 2024
+     * Retrieves the result based on the given contents and starts the ResultActivity.
+     *
+     * @param contents the batch number used to retrieve the result
      */
     protected void getResult(String contents) {
         Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
@@ -250,14 +263,10 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * function setupDetail
-     * return void
-     * parameter none
-     * This function sets up the detail view by initializing views and sending a network
-     * request to retrieve area details. Based on the response, it dynamically creates
-     * TextViews for each area and sets up click listeners to handle area-specific actions.
-     * author : JN
-     * date : 19 June 2024
+     * Sets up the detail view for the ResultActivity.
+     * This method initializes the necessary views and makes a network request to retrieve area data.
+     * It dynamically creates TextViews for each area and adds them to the buildingLayout.
+     * It also handles the click events on the TextViews to perform different actions based on the selected area.
      */
     private void setupDetail() {
         cardBuilding = findViewById(R.id.cardBuilding);
@@ -337,16 +346,10 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * function areaDetail
-     * return void
-     * parameter String idBuilding - the ID of the selected building
-     * String nameBuilding - the name of the selected building
-     * This function sets up the detail view for a specific building by retrieving
-     * and displaying the areas associated with that building. It sends a network
-     * request to fetch area details and dynamically creates TextViews for each area,
-     * setting up click listeners to handle area-specific actions.
-     * author : JN
-     * date : 19 June 2024
+     * Displays the area details based on the given building ID and name.
+     *
+     * @param idBuilding The ID of the building.
+     * @param nameBuilding The name of the building.
      */
     private void areaDetail(String idBuilding, String nameBuilding) {
         cardArea = findViewById(R.id.cardArea);
@@ -420,17 +423,12 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * function setupArea
-     * return void
-     * parameter String idBuilding - the ID of the selected building
-     * String idArea - the ID of the selected area
-     * String nameBuilding - the name of the selected building
-     * String nameArea - the name of the selected area
-     * This function sets up the detail view for a specific area within a building.
-     * It updates the UI to display the area details and provides options for the user
-     * to confirm moving an item to the selected area.
-     * author : JN
-     * date : 19 June 2024
+     * Sets up the area in the ResultActivity.
+     *
+     * @param idBuilding   The ID of the building.
+     * @param idArea       The ID of the area.
+     * @param nameBuilding The name of the building.
+     * @param nameArea     The name of the area.
      */
     private void setupArea(String idBuilding, String idArea, String nameBuilding, String nameArea) {
         textArea = findViewById(R.id.txtArea);
@@ -460,15 +458,10 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * function setupDelivered
-     * return void
-     * parameter String idLocation - the ID of the selected location
-     * String name - the name of the selected location
-     * This function sets up the detail view for a delivered item location.
-     * It updates the UI to display the location details and provides an option
-     * for the user to confirm moving an item to the selected location.
-     * author : JN
-     * date : 19 June 2024
+     * Sets up the delivered state for a location.
+     *
+     * @param idLocation The ID of the location.
+     * @param name The name of the location.
      */
     private void setupDelivered(String idLocation, String name) {
         textBuilding = findViewById(R.id.txtBuilding);
@@ -497,15 +490,10 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * function setupProduction
-     * return void
-     * parameter String idLocation - the ID of the selected production location
-     * String name - the name of the selected production location
-     * This function sets up the detail view for a production location.
-     * It updates the UI to display the location details and provides an option
-     * for the user to confirm moving an item to the selected production location.
-     * author : JN
-     * date : 19 June 2024
+     * Sets up the production based on the given location ID and name.
+     *
+     * @param idLocation The ID of the location.
+     * @param name The name of the location.
      */
     private void setupProduction(String idLocation, String name) {
         textBuilding = findViewById(R.id.txtBuilding);
@@ -534,14 +522,9 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * function moveItem
-     * return void
-     * parameter String idArea - the ID of the area to move the item to
-     * This function handles moving an item to a specified area by sending a POST request
-     * with the batch number, area ID, and user ID. Based on the response, it displays a
-     * toast message and may redirect to the MainActivity.
-     * author : JN
-     * date : 19 June 2024
+     * Moves an item to a specified area.
+     *
+     * @param idArea The ID of the target area.
      */
     private void moveItem(String idArea) {
         HashMap<String, String> userDetails = SessionManager.getUserDetails();

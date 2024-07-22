@@ -29,6 +29,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * The LoginActivity class is responsible for handling user login functionality.
+ * It sends a POST request with the user's email and password to the server and processes the server response.
+ * On successful login, it creates a user session and redirects to the MainActivity.
+ * This class extends the AppCompatActivity class.
+ * 
+ * @author JN
+ * @date 19 June 2024
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText email, password;
@@ -37,6 +46,12 @@ public class LoginActivity extends AppCompatActivity {
     BroadcastReceiver broadcastReceiver = null;
     SwipeRefreshLayout refreshLayout;
 
+    /**
+     * Called when the activity is starting or being recreated.
+     * Initializes the activity and sets up the user interface.
+     *
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -72,6 +87,9 @@ public class LoginActivity extends AppCompatActivity {
         ));
     }
 
+    /**
+     * Registers a broadcast receiver to monitor the internet connectivity status.
+     */
     private void Internetstatus() {
         registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
@@ -83,15 +101,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * function processLogin
-     * return void
-     * parameter String email - the email entered by the user
-     * String password - the password entered by the user
-     * This function handles user login by sending a POST request with the email and password.
-     * It processes the server response, handling different status codes to show appropriate messages
-     * or actions. On successful login, it creates a user session and redirects to the MainActivity.
-     * author : JN
-     * date : 19 June 2024
+     * Processes the login with the given email and password.
+     *
+     * @param email    The email of the user.
+     * @param password The password of the user.
      */
     private void processLogin(String email, String password) {
         RequestQueue queue = Volley.newRequestQueue(this);

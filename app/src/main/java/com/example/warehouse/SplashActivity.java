@@ -18,6 +18,13 @@ import com.example.warehouse.network.HttpTaskListener;
 import com.example.warehouse.network.InternetReceiver;
 import com.example.warehouse.network.MyHttpTask;
 
+/**
+ * The SplashActivity class represents the splash screen of the application.
+ * It is responsible for checking internet connectivity, making HTTP requests,
+ * and handling the completion of the HTTP task.
+ * @author JN
+ * @date 19 June 2024
+ */
 public class SplashActivity extends AppCompatActivity implements HttpTaskListener {
 
     SessionManager sessionManager;
@@ -48,14 +55,20 @@ public class SplashActivity extends AppCompatActivity implements HttpTaskListene
                 2000 // Delay in milliseconds
         ));
     }
+
+    /**
+     * Registers the broadcast receiver to listen for changes in internet connectivity.
+     */
     private void Internetstatus() {
         registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
+
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(broadcastReceiver);
     }
+
     @Override
     public void onTaskComplete(String result) {
         boolean Result = httpTask.getResult();

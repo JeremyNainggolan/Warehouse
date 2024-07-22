@@ -35,6 +35,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * The StockTakeActivity class is responsible for managing the stock take process in the warehouse.
+ * It allows the user to view and edit stock take information, confirm stock take, and navigate to other activities.
+ * @author JN
+ * @date 19 June 2024
+ */
 public class StockTakeActivity extends AppCompatActivity {
 
     private ImageView home;
@@ -46,6 +52,13 @@ public class StockTakeActivity extends AppCompatActivity {
     private SwipeRefreshLayout refreshLayout;
     private SessionManager sessionManager;
 
+    /**
+     * Called when the activity is starting or being recreated.
+     * Initializes the activity, sets the layout, and handles various click events.
+     * Retrieves data from the intent and makes a network request to fetch additional information.
+     *
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -214,6 +227,11 @@ public class StockTakeActivity extends AppCompatActivity {
         unregisterReceiver(broadcastReceiver);
     }
 
+    /**
+     * Sets up the edit area by retrieving area data from the server and dynamically creating TextViews for each area.
+     * Each TextView represents an area and allows the user to interact with it.
+     * The method also handles the click event of each TextView to perform specific actions based on the area name.
+     */
     private void editAreaSetup() {
         editArea = findViewById(R.id.editArea);
         areaLayout = findViewById(R.id.editLayArea);
@@ -280,6 +298,12 @@ public class StockTakeActivity extends AppCompatActivity {
         queue.add(request);
     }
 
+    /**
+     * Sets up the area based on the provided ID and building name.
+     *
+     * @param id         The ID of the area.
+     * @param buildName  The name of the building.
+     */
     private void setupArea(String id, String buildName) {
         areaID = findViewById(R.id.idArea);
         areaName = findViewById(R.id.areaDetail);
@@ -354,6 +378,15 @@ public class StockTakeActivity extends AppCompatActivity {
         });
         queue.add(request);
     }
+
+    /**
+     * Confirms the stock take by sending a POST request to the server with the necessary parameters.
+     * Retrieves the batch number, area ID, material name, building name, and area name from the corresponding views.
+     * Retrieves the user details from the session manager.
+     * Sends a POST request to the server with the batch number, area ID, user ID, and stock take ID as parameters.
+     * Handles the response from the server and performs actions based on the status code.
+     * Displays appropriate toast messages for success or failure.
+     */
     private void confirm() {
         batchNumber = findViewById(R.id.idDetail);
         areaID = findViewById(R.id.idArea);

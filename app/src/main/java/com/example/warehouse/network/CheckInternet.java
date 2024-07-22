@@ -6,6 +6,12 @@ import android.net.NetworkInfo;
 
 public class CheckInternet {
 
+    /**
+     * Returns the network status as a string.
+     *
+     * @param context The context of the application.
+     * @return The network status ("connected" if there is an active network connection, "disconnected" otherwise).
+     */
     public static String getNetworkInfo(Context context) {
         String status;
         ConnectivityManager connectivityManager =

@@ -20,6 +20,11 @@ import com.example.warehouse.network.InternetReceiver;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+/**
+ * The main activity of the application.
+ * @author JN
+ * @date 19 June 2024
+ */
 public class MainActivity extends AppCompatActivity {
 
     private SessionManager session;
@@ -71,21 +76,9 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        unregisterReceiver(broadcastReceiver);
-//    }
-
     /**
-     * function scanProcessing
-     * return void
-     * parameter none
-     * To launch the scanner layout from the zxing library
-     *  which will be described through the launcher function
-     *  and will be passed in the getResult function.
-     * author : JN
-     * date : 13 June 2024
+     * Launches the scanner layout from the zxing library.
+     * The result will be passed to the `getResult` function.
      */
     protected void scanProcessing() {
         ScanOptions scanOptions = new ScanOptions();
@@ -105,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
         }
     });
 
+    /**
+     * Launches the stock take activity.
+     * The result will be passed to the `getResult` function.
+     */
     protected void stockProcessing() {
         ScanOptions scanOptions = new ScanOptions();
         scanOptions.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
@@ -123,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
         }
     });
 
+    /**
+     * Performs the logout processing.
+     */
     protected void logoutProcessing() {
         session.logout();
     }
