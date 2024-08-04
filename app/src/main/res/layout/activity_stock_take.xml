@@ -7,388 +7,335 @@
     android:layout_height="match_parent"
     tools:context=".StockTakeActivity">
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <FrameLayout
-            android:id="@+id/frameLayout"
+        <RelativeLayout
+            android:id="@+id/stocktake_unload"
             android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:layout_marginTop="40dp">
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:visibility="gone">
 
-            <ImageView
-                android:id="@+id/dashboardstcktake"
-                android:layout_width="198dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center"
-                android:layout_marginStart="20dp"
-                android:src="@drawable/logo_light"
-                tools:ignore="RtlHardcoded" />
-
-        </FrameLayout>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/frmInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/frameLayout"
-            android:layout_margin="20dp"
-            app:cardCornerRadius="20dp">
-
-            <LinearLayout
-
+            <FrameLayout
+                android:id="@+id/frameLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        android:layout_weight="0.5"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/batch_number"
-                            android:textColor="@color/red"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/idDetail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="12dp"
-                            android:textSize="28sp" />
-
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Area ID"
-                            android:textColor="@color/red"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/idArea"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="12dp"
-                            android:textSize="28sp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        android:layout_weight="0.5"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Material Name"
-                            android:textColor="@color/red"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/materialName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="12dp"
-                            android:textSize="28sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Item Type"
-                            android:textColor="@color/red"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/itemType"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="12dp"
-                            android:textSize="28sp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/buildShow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Building Name"
-                    android:textColor="@color/red"
-                    android:textSize="16sp"
-                    android:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/buildingDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:textSize="28sp"
-                    android:visibility="visible" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Area Name"
-                    android:textColor="@color/red"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/areaDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:textSize="28sp" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/frmInfo"
-            android:visibility="gone"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:id="@+id/stock_take_info"
-            app:cardCornerRadius="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_height="130dp"
+                android:layout_marginTop="40dp">
 
                 <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
-                    android:src="@drawable/checked" />
-
-                <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/dashboardstcktake"
+                    android:layout_width="198dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/already_checked"
-                    android:textSize="28sp"
-                    android:padding="10dp"/>
+                    android:layout_gravity="left|center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/logo_light"
+                    tools:ignore="RtlHardcoded" />
 
-            </LinearLayout>
+            </FrameLayout>
 
-        </androidx.cardview.widget.CardView>
-
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/editArea"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/frmInfo"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:visibility="gone"
-            app:cardCornerRadius="20dp">
-
-            <LinearLayout
-                android:id="@+id/layoutArea"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/frmInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_below="@id/frameLayout"
+                android:layout_margin="20dp"
+                app:cardCornerRadius="5dp">
 
-                <TextView
-                    android:id="@+id/changeArea"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:padding="6dp"
-                    android:text="Change Area"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="26sp" />
-
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp">
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <LinearLayout
-                        android:id="@+id/editLayArea"
                         android:layout_width="match_parent"
-                        android:layout_height="38dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:layout_weight="0.5"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/batch_number"
+                                android:textColor="@color/red"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/idDetail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                android:textSize="28sp" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Area Name"
+                                android:textColor="@color/red"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/areaDetail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                android:textSize="28sp" />
+                        </LinearLayout>
                     </LinearLayout>
 
-                </ScrollView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-            </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:layout_weight="0.5"
+                            android:orientation="vertical">
 
-        </androidx.cardview.widget.CardView>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Material Name"
+                                android:textColor="@color/red"
+                                android:textSize="16sp" />
 
-        <LinearLayout
+                            <TextView
+                                android:id="@+id/materialName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                android:textSize="28sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Item Type"
+                                android:textColor="@color/red"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/itemType"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                android:textSize="28sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/buildShow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Building Name"
+                        android:textColor="@color/red"
+                        android:textSize="16sp"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/buildingDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:textSize="28sp"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/isChecked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/frmInfo"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/darkgrey"
+                app:cardCornerRadius="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:src="@drawable/checked" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/already_checked"
+                        android:textColor="@color/white"
+                        android:textSize="28sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.legacy.widget.Space
+                android:id="@+id/spaceIsActive"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_below="@id/isChecked" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/backHome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/spaceIsActive"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="2dp"
+                android:paddingHorizontal="10dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/bgBtnDefault"
+                app:cardCornerRadius="5dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Back"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/stockTakeConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/frmInfo"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="2dp"
+                android:paddingHorizontal="10dp"
+                android:visibility="visible"
+                app:cardBackgroundColor="@color/bgBtnDefault"
+                app:cardCornerRadius="5dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Confirm Stock Take"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.legacy.widget.Space
+                android:id="@+id/spaceNotActive"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_below="@id/stockTakeConfirm" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/moveStockTake"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/spaceNotActive"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="2dp"
+                android:paddingHorizontal="10dp"
+                android:visibility="visible"
+                app:cardBackgroundColor="@color/darkgrey"
+                app:cardCornerRadius="5dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Move Item"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.legacy.widget.Space
+                android:id="@+id/spaceNotActive_2"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_below="@id/moveStockTake" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/backStockTake"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/spaceNotActive_2"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="2dp"
+                android:paddingHorizontal="10dp"
+                android:visibility="visible"
+                app:cardBackgroundColor="@color/darkgrey"
+                app:cardCornerRadius="5dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Back"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/stocktake_load"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/editArea"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="30dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="30dp"
+            android:visibility="visible">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:orientation="vertical">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardEdit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:backgroundTint="@color/darkgrey"
-                    android:visibility="visible"
-                    app:cardCornerRadius="10dp">
-
-                    <TextView
-                        android:id="@+id/textEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:paddingStart="30dp"
-                        android:paddingTop="15dp"
-                        android:paddingEnd="30dp"
-                        android:paddingBottom="15dp"
-                        android:text="@string/edit"
-                        android:textAlignment="center"
-                        android:textColor="@color/white"
-                        android:textSize="28sp" />
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardCancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:backgroundTint="@color/darkgrey"
-                    android:visibility="gone"
-                    app:cardCornerRadius="10dp">
-
-                    <TextView
-                        android:id="@+id/textCancel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:paddingStart="20dp"
-                        android:paddingTop="15dp"
-                        android:paddingEnd="20dp"
-                        android:paddingBottom="15dp"
-                        android:text="@string/cancel"
-                        android:textAlignment="center"
-                        android:textColor="@color/white"
-                        android:textSize="28sp" />
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:gravity="right"
-                android:orientation="vertical">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardConfirm"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/darkgrey"
-                    android:visibility="visible"
-                    app:cardCornerRadius="10dp">
-
-                    <TextView
-                        android:id="@+id/textConfirm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:paddingStart="25dp"
-                        android:paddingTop="15dp"
-                        android:paddingEnd="25dp"
-                        android:paddingBottom="15dp"
-                        android:text="Confirm"
-                        android:textAlignment="center"
-                        android:textColor="@color/white"
-                        android:textSize="28sp" />
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardOk"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/darkgrey"
-                    android:visibility="gone"
-                    app:cardCornerRadius="10dp">
-
-                    <TextView
-                        android:id="@+id/textOk"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:paddingStart="25dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="25dp"
-                        android:paddingBottom="10dp"
-                        android:text="Ok"
-                        android:textAlignment="center"
-                        android:textColor="@color/white"
-                        android:textSize="28sp" />
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-        </LinearLayout>
+            <ProgressBar
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center" />
+        </FrameLayout>
     </RelativeLayout>
+
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

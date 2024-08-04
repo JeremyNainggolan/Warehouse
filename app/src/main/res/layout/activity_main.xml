@@ -13,12 +13,14 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/main_unload"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <ImageView
                 android:id="@+id/altadia"
@@ -141,9 +143,22 @@
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
 
+        <FrameLayout
+            android:id="@+id/main_load"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="30dp"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center" />
+        </FrameLayout>
     </RelativeLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

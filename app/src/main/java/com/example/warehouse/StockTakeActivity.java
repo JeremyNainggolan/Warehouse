@@ -4,24 +4,24 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
+import androidx.legacy.widget.Space;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.warehouse.model.SessionManager;
@@ -32,25 +32,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
  * The StockTakeActivity class is responsible for managing the stock take process in the warehouse.
  * It allows the user to view and edit stock take information, confirm stock take, and navigate to other activities.
+ *
  * @author JN
  * @date 19 June 2024
  */
 public class StockTakeActivity extends AppCompatActivity {
 
-    private ImageView home;
-    private TextView batchNumber, areaID, materialName, buildingName, buildShow, areaName, changeArea, itemType;
-    private CardView confirm, edit, cancel, editArea, stockTakeInfo;
-    private String stockTakeId;
-    private LinearLayout areaLayout;
+    private String stockTakeId, areaId, batchId;
+    private ImageView homeButton;
+    private TextView batchNumber, areaName, materialName, buildingName, itemType;
+    private CardView stockTakeConfirm, moveStockTake, isChecked, backHome, backStockTake;
     private BroadcastReceiver broadcastReceiver = null;
     private SwipeRefreshLayout refreshLayout;
-    private SessionManager sessionManager;
+    private RelativeLayout stockTakeUnLoad;
+    private FrameLayout stockTakeLoad;
+    private Space spaceNotActive, spaceNotActive_2, spaceIsActive;
 
     /**
      * Called when the activity is starting or being recreated.
@@ -62,159 +63,72 @@ public class StockTakeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_take);
 
-        sessionManager = new SessionManager(getApplicationContext());
-
-        home = findViewById(R.id.dashboardstcktake);
-        home.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        });
-
+        construct();
         broadcastReceiver = new InternetReceiver();
         internetStatus();
 
-        refreshLayout = findViewById(R.id.stockRefresh);
+        Intent intent = getIntent();
+        this.batchId = intent.getStringExtra("batch_number");
+        String url = AppUrl.CHECK + batchId;
+        setup(url);
+
+        homeButton.setOnClickListener(v -> {
+            Intent home = new Intent(getApplicationContext(), MainActivity.class);
+            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(home);
+        });
+
         refreshLayout.setOnRefreshListener(() -> new android.os.Handler().postDelayed(
                 () -> {
                     refreshLayout.setEnabled(true);
                     refreshLayout.setRefreshing(false);
                 },
-                2000 // Delay in milliseconds
+                2000
         ));
 
-        confirm = findViewById(R.id.cardConfirm);
-        confirm.setOnClickListener(v -> confirm());
 
-        cancel = findViewById(R.id.cardCancel);
-        editArea = findViewById(R.id.editArea);
-        areaLayout = findViewById(R.id.editLayArea);
-
-        cancel.setOnClickListener(v -> {
-            areaLayout.removeAllViews();
-            editArea.setVisibility(View.GONE);
-            cancel.setVisibility(View.GONE);
-            edit.setVisibility(View.VISIBLE);
+        stockTakeConfirm.setOnClickListener(v -> {
+            showAlert();
         });
 
-        edit = findViewById(R.id.cardEdit);
-
-        edit.setOnClickListener(v -> {
-            edit.setVisibility(View.GONE);
-            cancel.setVisibility(View.VISIBLE);
-            editAreaSetup();
+        backHome.setOnClickListener(v -> {
+            goHome();
         });
 
-        Intent intent = getIntent();
-        String batch = intent.getStringExtra("batch_number");
+        backStockTake.setOnClickListener(v -> {
+            goHome();
+        });
 
-        batchNumber = findViewById(R.id.idDetail);
-        areaID = findViewById(R.id.idArea);
-        materialName = findViewById(R.id.materialName);
-        buildingName = findViewById(R.id.buildingDetail);
-        areaName = findViewById(R.id.areaDetail);
-        buildShow = findViewById(R.id.buildShow);
-        itemType = findViewById(R.id.itemType);
-
-        String url = AppUrl.CHECK + batch;
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        @SuppressLint("SetTextI18n") StringRequest request = new StringRequest(Request.Method.GET, url, s -> {
-            try {
-                JSONObject jsonObject = new JSONObject(s);
-                int status = Integer.parseInt(jsonObject.getString("status"));
-                switch (status) {
-                    case 201:
-                        internetStatus();
-                        Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(i);
-                        break;
-                    case 210:
-                        internetStatus();
-                        try {
-                            JSONObject result = new JSONObject(jsonObject.getString("body"));
-                            int getStatus = Integer.parseInt(result.getString("status"));
-                            areaName.setText(result.getString("area_name"));
-                            if (getStatus == 0) {
-                                if (areaName.getText().toString().equals("Production") || areaName.getText().toString().equals("Delivered")) {
-                                    if (result.getString("item_type").equals("material")) {
-                                        itemType.setText("Raw Material");
-                                    } else if (result.getString("item_type").equals("goods")) {
-                                        itemType.setText("Finish Good");
-                                    }
-                                    batchNumber.setText(result.getString("batch_number"));
-                                    materialName.setText(result.getString("item_name"));
-                                    buildingName.setVisibility(View.GONE);
-                                    buildShow.setVisibility(View.GONE);
-                                    areaID.setText(result.getString("area_id"));
-                                    stockTakeId = result.getString("stock_take_id");
-                                    edit.setVisibility(View.GONE);
-                                    confirm.setVisibility(View.GONE);
-                                } else {
-                                    if (result.getString("item_type").equals("material")) {
-                                        itemType.setText("Raw Material");
-                                    } else if (result.getString("item_type").equals("goods")) {
-                                        itemType.setText("Finish Good");
-                                    }
-                                    batchNumber.setText(result.getString("batch_number"));
-                                    materialName.setText(result.getString("item_name"));
-                                    buildingName.setText(result.getString("building_name"));
-                                    areaID.setText(result.getString("area_id"));
-                                    stockTakeId = result.getString("stock_take_id");
-                                }
-                            } else {
-                                stockTakeInfo = findViewById(R.id.stock_take_info);
-                                stockTakeInfo.setVisibility(View.VISIBLE);
-                                edit.setVisibility(View.GONE);
-                                confirm.setVisibility(View.GONE);
-
-                                if (areaName.getText().toString().equals("Production") || areaName.getText().toString().equals("Delivered")) {
-                                    if (result.getString("item_type").equals("material")) {
-                                        itemType.setText("Raw Material");
-                                    } else if (result.getString("item_type").equals("goods")) {
-                                        itemType.setText("Finish Good");
-                                    }
-                                    batchNumber.setText(result.getString("batch_number"));
-                                    materialName.setText(result.getString("item_name"));
-                                    buildingName.setVisibility(View.GONE);
-                                    buildShow.setVisibility(View.GONE);
-                                    areaID.setText(result.getString("area_id"));
-                                    stockTakeId = result.getString("stock_take_id");
-                                } else {
-                                    if (result.getString("item_type").equals("material")) {
-                                        itemType.setText("Raw Material");
-                                    } else if (result.getString("item_type").equals("goods")) {
-                                        itemType.setText("Finish Good");
-                                    }
-                                    batchNumber.setText(result.getString("batch_number"));
-                                    materialName.setText(result.getString("item_name"));
-                                    buildingName.setText(result.getString("building_name"));
-                                    areaID.setText(result.getString("area_id"));
-                                    stockTakeId = result.getString("stock_take_id");
-                                }
-
-                                stockTakeInfo.setOnClickListener(v -> {
-                                    Intent intent1 = new Intent(getApplicationContext(), MainActivity.class);
-                                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent1);
-                                });
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(StockTakeActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                        break;
-                }
-            } catch (Throwable throwable) {
-                Toast.makeText(StockTakeActivity.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
+        moveStockTake.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent move = new Intent(getApplicationContext(), AreaActivity.class);
+                move.putExtra("batch_number", batchId);
+                move.putExtra("MODE", "STOCK_MODE");
+                startActivity(move);
             }
-        }, volleyError -> {
         });
-        queue.add(request);
+
+    }
+
+    private void showAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(StockTakeActivity.this);
+        builder.setTitle("Confirm?")
+                .setMessage("Are you sure to confirm stock take for " + materialName.getText().toString() + "?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    confirm(batchId, areaId, stockTakeId);
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.cancel()).show();
+    }
+
+    private void goHome() {
+        Intent home = new Intent(getApplicationContext(), MainActivity.class);
+        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(home);
     }
 
     private void internetStatus() {
@@ -227,178 +141,63 @@ public class StockTakeActivity extends AppCompatActivity {
         unregisterReceiver(broadcastReceiver);
     }
 
-    /**
-     * Sets up the edit area by retrieving area data from the server and dynamically creating TextViews for each area.
-     * Each TextView represents an area and allows the user to interact with it.
-     * The method also handles the click event of each TextView to perform specific actions based on the area name.
-     */
-    private void editAreaSetup() {
-        editArea = findViewById(R.id.editArea);
-        areaLayout = findViewById(R.id.editLayArea);
+    protected void isLoad (boolean _load, boolean _unload) {
+        if (_load) {
+            this.stockTakeLoad.setVisibility(View.VISIBLE);
+            this.stockTakeUnLoad.setVisibility(View.GONE);
+        } else if (_unload) {
+            this.stockTakeLoad.setVisibility(View.GONE);
+            this.stockTakeUnLoad.setVisibility(View.VISIBLE);
+        }
+    }
 
+    protected void setup(String _url) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest request = new StringRequest(Request.Method.GET, AppUrl.GET_AREA, new Response.Listener<String>() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onResponse(String s) {
-                try {
-                    JSONObject object = new JSONObject(s);
-                    int status = Integer.parseInt(object.getString("status"));
-                    switch (status) {
-                        case 201:
-                            break;
-                        case 210:
-                            JSONObject body = object.getJSONObject("body");
+        @SuppressLint("SetTextI18n") StringRequest request = new StringRequest(Request.Method.GET, _url, s -> {
+            try {
+                isLoad(true, false);
+                JSONObject jsonObject = new JSONObject(s);
+                int status = Integer.parseInt(jsonObject.getString("status"));
+                switch (status) {
+                    case 201:
+                        isLoad(false, true);
+                        internetStatus();
+                        Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(i);
+                        break;
+                    case 210:
+                        isLoad(false, true);
+                        internetStatus();
+                        try {
+                            JSONObject result = new JSONObject(jsonObject.getString("body"));
+                            int stockTakeStatus = Integer.parseInt(result.getString("status"));
+                            setVisibility(stockTakeStatus != 0);
+                            itemType.setAllCaps(true);
+                            batchNumber.setText(result.getString("batch_number"));
+                            areaName.setText(result.getString("area_name"));
+                            materialName.setText(result.getString("item_name"));
+                            itemType.setText(result.getString("item_type"));
+                            buildingName.setText(result.getString("building_name"));
 
-                            Iterator<String> keys = body.keys();
-
-                            while (keys.hasNext()) {
-                                JSONObject item = body.getJSONObject(String.valueOf(keys.next()));
-                                String id = item.getString("id");
-                                String name = item.getString("name");
-
-                                TextView tv = new TextView(getApplicationContext());
-                                tv.setText(name);
-                                tv.setId(Integer.parseInt(id));
-                                tv.setTextColor(Color.parseColor("#FFeb4a4a"));
-                                tv.setTextSize(28);
-                                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                lp.setMargins(10, 4, 10, 4);
-                                tv.setPadding(0, 50, 0, 50);
-                                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                                tv.setBackgroundResource(R.drawable.lbl_area);
-                                tv.setLayoutParams(lp);
-
-                                areaLayout.addView(tv);
-                                editArea.setVisibility(View.VISIBLE);
-
-                                tv.setOnClickListener(v -> {
-                                    switch (name) {
-                                        case "Production":
-                                        case "Delivered":
-                                            areaLayout.removeAllViews();
-                                            editArea.setVisibility(View.GONE);
-                                            break;
-                                        default:
-                                            areaLayout.removeAllViews();
-                                            editArea.setVisibility(View.GONE);
-                                            setupArea(id, name);
-                                            break;
-                                    }
-                                });
-                            }
-                            break;
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            this.stockTakeId = result.getString("stock_take_id");
+                            this.areaId = result.getString("area_id");
+                        } catch (Exception e) {
+                            Toast.makeText(StockTakeActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                        break;
                 }
+            } catch (Throwable throwable) {
+                isLoad(false, true);
+                Toast.makeText(StockTakeActivity.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
             }
         }, volleyError -> {
         });
         queue.add(request);
     }
 
-    /**
-     * Sets up the area based on the provided ID and building name.
-     *
-     * @param id         The ID of the area.
-     * @param buildName  The name of the building.
-     */
-    private void setupArea(String id, String buildName) {
-        areaID = findViewById(R.id.idArea);
-        areaName = findViewById(R.id.areaDetail);
-        buildingName = findViewById(R.id.buildingDetail);
-
-        editArea = findViewById(R.id.editArea);
-        areaLayout = findViewById(R.id.editLayArea);
-
-        changeArea = findViewById(R.id.changeArea);
-        changeArea.setOnClickListener(v -> {
-            areaLayout.removeAllViews();
-            editAreaSetup();
-        });
-
-        cancel = findViewById(R.id.cardCancel);
-        confirm = findViewById(R.id.cardConfirm);
-
-        confirm.setVisibility(View.VISIBLE);
-        confirm.setOnClickListener(v -> confirm());
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest request = new StringRequest(Request.Method.GET, AppUrl.GET_AREA + id, new Response.Listener<String>() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onResponse(String s) {
-                try {
-                    JSONObject object = new JSONObject(s);
-                    int status = Integer.parseInt(object.getString("status"));
-                    switch (status) {
-                        case 201:
-                            break;
-                        case 210:
-                            JSONObject body = object.getJSONObject("body");
-
-                            Iterator<String> keys = body.keys();
-
-                            while (keys.hasNext()) {
-                                JSONObject item = body.getJSONObject(String.valueOf(keys.next()));
-                                String id = item.getString("id");
-                                String name = item.getString("name");
-
-                                TextView tv = new TextView(getApplicationContext());
-                                tv.setText(name);
-                                tv.setId(Integer.parseInt(id));
-                                tv.setTextColor(Color.parseColor("#FFeb4a4a"));
-                                tv.setTextSize(28);
-                                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                lp.setMargins(10, 4, 10, 4);
-                                tv.setPadding(0, 50, 0, 50);
-                                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                                tv.setBackgroundResource(R.drawable.lbl_area);
-                                tv.setLayoutParams(lp);
-
-                                areaLayout.addView(tv);
-                                editArea.setVisibility(View.VISIBLE);
-
-                                tv.setOnClickListener(v -> {
-                                    areaID.setText(id);
-                                    buildingName.setText(buildName);
-                                    areaName.setText(name);
-                                    areaLayout.removeAllViews();
-                                    editArea.setVisibility(View.GONE);
-                                });
-                            }
-                            break;
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        }, volleyError -> {
-        });
-        queue.add(request);
-    }
-
-    /**
-     * Confirms the stock take by sending a POST request to the server with the necessary parameters.
-     * Retrieves the batch number, area ID, material name, building name, and area name from the corresponding views.
-     * Retrieves the user details from the session manager.
-     * Sends a POST request to the server with the batch number, area ID, user ID, and stock take ID as parameters.
-     * Handles the response from the server and performs actions based on the status code.
-     * Displays appropriate toast messages for success or failure.
-     */
-    private void confirm() {
-        batchNumber = findViewById(R.id.idDetail);
-        areaID = findViewById(R.id.idArea);
-        materialName = findViewById(R.id.materialName);
-        buildingName = findViewById(R.id.buildingDetail);
-        areaName = findViewById(R.id.areaDetail);
-
+    private void confirm(String _batchNumber, String _idArea, String _idStockTake) {
         HashMap<String, String> userDetails = SessionManager.getUserDetails();
-
-        String idBatch = batchNumber.getText().toString();
-        String idArea = areaID.getText().toString();
-        String idStockTake = stockTakeId;
         String idUser = userDetails.get("idKey");
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -428,14 +227,61 @@ public class StockTakeActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("batch_number", idBatch);
-                params.put("area_id", idArea);
+                params.put("batch_number", _batchNumber);
+                params.put("area_id", _idArea);
                 params.put("userid", idUser);
-                params.put("stock_take_id", idStockTake);
+                params.put("stock_take_id", _idStockTake);
 
                 return params;
             }
         };
         queue.add(request);
+    }
+
+    protected void construct() {
+        this.homeButton = findViewById(R.id.dashboardstcktake);
+        this.refreshLayout = findViewById(R.id.stockRefresh);
+
+        this.batchNumber = findViewById(R.id.idDetail);
+        this.materialName = findViewById(R.id.materialName);
+        this.buildingName = findViewById(R.id.buildingDetail);
+        this.areaName = findViewById(R.id.areaDetail);
+        this.itemType = findViewById(R.id.itemType);
+
+        this.isChecked = findViewById(R.id.isChecked);
+        this.stockTakeConfirm = findViewById(R.id.stockTakeConfirm);
+        this.moveStockTake = findViewById(R.id.moveStockTake);
+        this.backHome = findViewById(R.id.backHome);
+        this.backStockTake = findViewById(R.id.backStockTake);
+
+        this.spaceIsActive = findViewById(R.id.spaceIsActive);
+        this.spaceNotActive = findViewById(R.id.spaceNotActive);
+        this.spaceNotActive_2 = findViewById(R.id.spaceNotActive_2);
+
+        this.stockTakeLoad = findViewById(R.id.stocktake_load);
+        this.stockTakeUnLoad = findViewById(R.id.stocktake_unload);
+
+    }
+
+    protected void setVisibility(Boolean _isChecked) {
+        if (_isChecked) {
+            this.spaceIsActive.setVisibility(View.VISIBLE);
+            this.isChecked.setVisibility(View.VISIBLE);
+            this.backHome.setVisibility(View.VISIBLE);
+            this.spaceNotActive.setVisibility(View.GONE);
+            this.spaceNotActive_2.setVisibility(View.GONE);
+            this.stockTakeConfirm.setVisibility(View.GONE);
+            this.moveStockTake.setVisibility(View.GONE);
+            this.backStockTake.setVisibility(View.GONE);
+        } else {
+            this.isChecked.setVisibility(View.GONE);
+            this.spaceIsActive.setVisibility(View.GONE);
+            this.backHome.setVisibility(View.GONE);
+            this.spaceNotActive.setVisibility(View.VISIBLE);
+            this.spaceNotActive_2.setVisibility(View.VISIBLE);
+            this.moveStockTake.setVisibility(View.VISIBLE);
+            this.backStockTake.setVisibility(View.VISIBLE);
+            this.stockTakeConfirm.setVisibility(View.VISIBLE);
+        }
     }
 }
